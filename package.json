@@ -1,0 +1,8 @@
+{
+  "name": "balance-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/guisteink/balance-service.git",
+  "author": "Guilherme <guilherme.steink@gmail.com>",
+  "license": "MIT"
+}
