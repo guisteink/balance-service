@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "node src/index.js",
-    "start:all": "concurrently \"npm run start\" \"npm run server-one\" \"npm run server-two\" \"npm run server-three\"",
+    "server": "concurrently \"npm run start\" \"npm run server-one\" \"npm run server-two\" \"npm run server-three\"",
     "server-one": "node src/mock-server/server-one.js",
     "server-two": "node src/mock-server/server-two.js",
     "server-three": "node src/mock-server/server-three.js"
