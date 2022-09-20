@@ -1,12 +1,17 @@
 const express = require('express')
 const app = express()
 const port = 8002;
+const timer = ms => new Promise( res => setTimeout(res, ms));
 
-app.listen(port, () => {
-    console.log(`Fog service is now running on ${port}!!! 🔥🔥🔥\n`);
+app.use('/', async (req, res) => {
+    await timer(1000);
 
-    // sleep(3000) // 3s
-    // return res.json({
-    //     "message": "Hello from fog server"
-    // })
-})
+    res.json({
+        "message": "Hello from fog server",
+        "edge": false,
+        "fog": true,
+        "cloud": false
+    });
+});
+
+app.listen(port, () => console.log(`Fog service is now running on ${port}!!! 🔥🔥🔥\n`));

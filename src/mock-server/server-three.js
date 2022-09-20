@@ -1,12 +1,17 @@
 const express = require('express')
 const app = express()
 const port = 8003;
+const timer = ms => new Promise( res => setTimeout(res, ms));
 
-app.listen(port, () => {
-    console.log(`Cloud service is now running on ${port}!!! 🔥🔥🔥\n`);
+app.use('/', async (req, res) => {
+    await timer(1000);
 
-    // sleep(3000) // 3s
-    // return res.json({
-    //     "message": "Hello from cloud server"
-    // })
-})
+    res.json({
+        "message": "Hello from cloud server",
+        "edge": false,
+        "fog": false,
+        "cloud": true
+    });
+});
+
+app.listen(port, () =>  console.log(`Cloud service is now running on ${port}!!! 🔥🔥🔥\n`));
