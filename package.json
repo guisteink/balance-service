@@ -11,9 +11,11 @@
   },
   "scripts": {
     "start": "node src/index.js",
+    "dev": "node src/weighted-round-robin-server.js",
     "server": "concurrently \"npm run start\" \"npm run server-one\" \"npm run server-two\" \"npm run server-three\"",
-    "server-one": "node src/mock-server/server-one.js",
-    "server-two": "node src/mock-server/server-two.js",
-    "server-three": "node src/mock-server/server-three.js"
+    "dev-server": "concurrently \"npm run dev\" \"npm run server-one\" \"npm run server-two\" \"npm run server-three\"",
+    "server-one": "node --stack-size=32000 src/mock-server/server-one.js",
+    "server-two": "node --stack-size=32000 src/mock-server/server-two.js",
+    "server-three": "node --stack-size=32000 src/mock-server/server-three.js"
   }
 }
