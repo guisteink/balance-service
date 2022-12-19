@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-const roundRobin = require('./balance-algorithms/round-robin');
+const roundRobin = require('./algorithms/round-robin');
 
 const app = express();
 const port = 8000;
@@ -8,7 +8,7 @@ const servers = [
   "http://localhost:8001/", // edge server -> weight 1
   "http://localhost:8002/", // fog server -> weight 2
   "http://localhost:8003/", // cloud server -> weight 3
-]
+];
 
 let current = 0,
   server;

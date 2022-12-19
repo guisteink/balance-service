@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-const WRR = require('./balance-algorithms/weighted-round-robin');
+const WRR = require('./algorithms/weighted-round-robin');
 
 const port = 8000;
 const app = express();
