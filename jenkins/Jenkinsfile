@@ -1,11 +1,14 @@
 #!/usr/bin/env groovy
 pipeline {
     agent none
+
+    tools { nodejs "node" }
+
     stages {
         stage('Build') {
-            agent {
-                docker { image 'node'}
-            }
+            // agent {
+            //     docker { image 'node'}
+            // }
             steps {
                 sh "npm start"
             }
