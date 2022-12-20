@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 pipeline {
-    agent none
+    agent any
 
     stages {
         stage('Build') {
@@ -9,7 +9,6 @@ pipeline {
             // }
             steps {
                 sh "npm install"
-                sh "npm start"
             }
         }
     }
