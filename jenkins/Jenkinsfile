@@ -4,9 +4,6 @@ pipeline {
 
     stages {
         stage('Build') {
-            agent {
-                docker { image 'node:14.15.0'}
-            }
             steps {
                 sh "node --version"
                 sh "npm install"
