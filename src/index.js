@@ -31,6 +31,15 @@ const handler = async (req, res) => {
 
 app.use('/balance',(req, res) => { handler(req, res) });
 
+app.use('/health-check', async(req, res) => {
+  console.info(`[load-balancer] health-check request received at ${new Date().toISOString()}`);
+  res
+      .status(200)
+      .send({
+          "result": "OK"
+      });
+});
+
 app.listen(port, () => {
     console.log(`\nStarting round-robin server on port ${port} 🔥🔥🔥\n`);
 })

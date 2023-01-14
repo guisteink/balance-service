@@ -19,5 +19,5 @@ app.use('/', async (req, res) => {
     });
 });
 
-// app.listen(port, () => console.log(`Edge service is now running on ${port}!!! 🔥🔥🔥\n`));
-app.listen(port, () => {});
+app.listen(port, () => console.log(`[🔥] Edge service is now running on ${port}!!!\n`));
+// app.listen(port, () => {});
