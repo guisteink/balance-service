@@ -1,6 +1,9 @@
 const express = require('express');
 const axios = require('axios');
-const roundRobin = require('./algorithms/round-robin');
+const { writeFileSync } = require('fs');
+
+const roundRobin = require('../algorithms/round-robin');
+const loadFileMemory = require('../helpers/handleFileMemory');
 
 const app = express();
 const port = 8000;
@@ -13,14 +16,23 @@ const servers = [
 let current = 0,
   server;
 
+let { total, success } = loadFileMemory() ?? 0;
+
 // * LOAD BALANCING ALGORITHM *
 const handler = async (req, res) => {
+  total += 1;
+  writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
+
   current = roundRobin(servers.length, current)
   server = servers[current];
   const { fibonacci } = req.query ?? 0;
 
   try {
     const response = await axios(server, { method: 'GET', params: { fibonacci } });
+    if(response.status === 200) {
+      success += 1;
+      writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
+    }
     console.log(`response from ${server}\n`);
     res.json(response.data);
   } catch (error) {

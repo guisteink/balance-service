@@ -1,8 +1,10 @@
 const express = require('express')
-const app = express()
-const port = 8001;
+
 const fibonacciNumberRecursive = require('../helpers/fibonacciNumberRecursive');
 const timer = require('../helpers/timer');
+
+const app = express()
+const port = 8001;
 
 app.use('/', async (req, res) => {
     const { fibonacci } = req.query ?? 0;
@@ -19,5 +21,13 @@ app.use('/', async (req, res) => {
     });
 });
 
+app.use('/health-check', async(req, res) => {
+    console.info(`[edge] health-check request received at ${new Date().toISOString()}`);
+    res
+        .status(200)
+        .send({
+            "result": "OK"
+        });
+});
+
 app.listen(port, () => console.log(`[🔥] Edge service is now running on ${port}!!!\n`));
-// app.listen(port, () => {});
