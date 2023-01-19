@@ -4,6 +4,7 @@ const { writeFileSync } = require('fs');
 
 const WRR = require('../algorithms/weighted-round-robin');
 const loadFileMemory = require('../helpers/handleFileMemory');
+const loadFile = require('../helpers/loadFile');
 
 const port = 8000;
 const app = express();
@@ -12,7 +13,7 @@ const servers = new WRR();
 for(let i = 0; i <= 2; i++) {
     servers.add({
         uri: `http://localhost:800${i+1}/`,
-        weight: i+3
+        weight: i+1
     });
 }
 

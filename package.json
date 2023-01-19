@@ -8,15 +8,17 @@
   "dependencies": {
     "axios": "^0.27.2",
     "express": "^4.18.1",
-    "fs": "^0.0.1-security"
+    "fs": "^0.0.1-security",
+    "sinon": "^15.0.1"
   },
   "scripts": {
-    "server-rr": "concurrently \"npm run load-balancer-rr\" \"npm run server-one\" \"npm run server-two\" \"npm run server-three\"",
-    "server-wrr": "concurrently \"npm run load-balancer-wrr\" \"npm run server-one\" \"npm run server-two\" \"npm run server-three\"",
+    "server-rr": "concurrently \"npm run load-balancer-rr\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
+    "server-wrr": "concurrently \"npm run load-balancer-wrr\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
     "load-balancer-rr": "node src/servers/index.js",
     "load-balancer-wrr": "node src/servers/weighted-round-robin-server.js",
-    "server-one": "node --stack-size=32000 src/mock-server/server-one.js",
-    "server-two": "node --stack-size=32000 src/mock-server/server-two.js",
-    "server-three": "node --stack-size=32000 src/mock-server/server-three.js"
+    "service-one": "node --stack-size=32000 src/mock-server/server-one.js",
+    "service-two": "node --stack-size=32000 src/mock-server/server-two.js",
+    "service-three": "node --stack-size=32000 src/mock-server/server-three.js",
+    "server": "concurrently \"npm run load-balancer-rr\" \"npm run service-two\""
   }
 }

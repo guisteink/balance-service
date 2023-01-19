@@ -1,4 +1,5 @@
 const express = require('express')
+const { readFileSync, existsSync, writeFileSync } = require('fs');
 
 const fibonacciNumberRecursive = require('../helpers/fibonacciNumberRecursive');
 const timer = require('../helpers/timer');
@@ -13,7 +14,22 @@ app.use('/', async (req, res) => {
     let result = await fibonacciNumberRecursive(fibonacci)
     let end = new Date().getTime();
 
-    console.log(`processing time: ${timer(start, end)} seconds`);
+    let timeSpent = timer(start, end);
+    console.log(`processing time: ${timeSpent} seconds`);
+
+    let processingTime = 0, success = 0;
+    if (!existsSync('./processing-time-cloud.json')) {
+        writeFileSync('./processing-time-cloud.json', JSON.stringify({ processingTime, success }));
+    } else {
+        const lastRunStr = readFileSync('./processing-time-cloud.json');
+        const lastRun = JSON.parse(lastRunStr);
+        processingTime += lastRun.processingTime;
+        success += lastRun.success;
+
+        processingTime = processingTime + timeSpent;
+        success += 1;
+        writeFileSync('./processing-time-cloud.json', JSON.stringify({ processingTime, success }));
+    }
 
     res.json({
         "result": `Hello from cloud server, the result for the ${fibonacci}th fibonacci number is: ${result}`,

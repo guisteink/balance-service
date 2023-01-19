@@ -8,15 +8,17 @@ const loadFileMemory = require('../helpers/handleFileMemory');
 const app = express();
 const port = 8000;
 const servers = [
-  "http://localhost:8001/", // edge server -> weight 1
+  // "http://localhost:8001/", // edge server -> weight 1
+  "http://15.228.239.16:8000/", // edge server -> weight 1 :
   "http://localhost:8002/", // fog server -> weight 2
-  "http://localhost:8003/", // cloud server -> weight 3
+  // "http://localhost:8003/", // cloud server -> weight 3
+  "http://35.178.232.188:8000/", // cloud server -> weight 3
 ];
 
 let current = 0,
   server;
 
-let { total, success } = loadFileMemory() ?? 0;
+let { total, success } = loadFileMemory() ?? {};
 
 // * LOAD BALANCING ALGORITHM *
 const handler = async (req, res) => {
