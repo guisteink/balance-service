@@ -1,8 +1,14 @@
-## Docker image to Weighted round robin: balance-service-wrr
-## Docker image to Normal round robin: balance-service-rr
 
-## Basic information about Docker
-# to build the image, in the directory of Dockerfile: "docker build -t {{image-name}} ."
-# to run the image created: "docker run {{image-name}}"
-# to list all images created: "docker image ls"
-# to list container used: "docker container ls"
+# README
+This project was made with intention to simulate a load-balancer and your algorithms to load balancing. Below are some basic informations, including things I dont want forget 😅😅😅
+
+
+#### Docker names used:
+- Image to run WRR algorithm: wrr-image
+- Image to run RR algorithm: rr-image
+
+#### Basic commands to dont forget:
+- To build image: "docker build -t {{image-name}} ."
+- To run the image created: "docker run {{image-name}}"
+- To list all images created: "docker image ls"
+- To list container used: "docker container ls"
