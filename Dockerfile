@@ -14,5 +14,7 @@ COPY ./src ./src
 # Instala todos os pacotes no container
 RUN npm install
 
-# Vai rodar o comando para startar a aplicacao, assim que nosso container criar a api já vai passar a rodar, sem necessitar de um npm start!
-CMD npm run load-balancer-wrr
+# Vai rodar o comando para startar a aplicacao com o algoritmo pre-determindo de balanceamento
+# assim que nosso container criar a api já vai passar a rodar
+# !CMD npm run load-balancer-wrr
+CMD npm run load-balancer-rr
