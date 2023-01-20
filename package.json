@@ -1,6 +1,6 @@
 {
   "name": "balance-service",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "index.js",
   "repository": "https://github.com/guisteink/balance-service.git",
   "author": "Guilherme <guilherme.steink@gmail.com>",
@@ -9,9 +9,11 @@
     "axios": "^0.27.2",
     "express": "^4.18.1",
     "fs": "^0.0.1-security",
+    "mocha": "^10.2.0",
     "sinon": "^15.0.1"
   },
   "scripts": {
+    "test": "mocha ./**/*.js",
     "server-rr": "concurrently \"npm run load-balancer-rr\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
     "server-wrr": "concurrently \"npm run load-balancer-wrr\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
     "load-balancer-rr": "node src/servers/index.js",
