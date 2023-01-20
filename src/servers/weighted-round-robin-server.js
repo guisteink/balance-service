@@ -6,7 +6,7 @@ const WRR = require('../algorithms/weighted-round-robin');
 const loadFileMemory = require('../helpers/handleFileMemory');
 const loadFile = require('../helpers/loadFile');
 
-const port = 8000;
+const port = 9000;
 const app = express();
 const servers = new WRR();
 
@@ -56,3 +56,5 @@ app.use('/health-check', async(req, res) => {
 app.listen(port, () => {
     console.log(`\nStarting weighted-round-robin server on port ${port} 🔥🔥🔥\n`);
 })
+
+module.exports = app;

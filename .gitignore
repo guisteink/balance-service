@@ -1,3 +1,5 @@
 node_modules
 yarn-error.log
 package-lock.json
+processing-time-fog.json
+total-reqs.json
