@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const { writeFileSync } = require('fs');
+const redis = require('redis');
 
 const roundRobin = require('../algorithms/round-robin');
 const loadFileMemory = require('../helpers/handleFileMemory');
@@ -16,31 +17,79 @@ const servers = [
 ];
 
 let current = 0,
-  server;
+  server,
+  redisClient,
+  cacheKey,
+  fibonacciKey = [],
+  isCached = false,
+  lastService = 0;
+
+(async () => {
+  redisClient = new redis.createClient();
+  redisClient.on("error", (error) => console.error(`Error : ${error}`));
+
+  await redisClient.connect();
+})();
 
 let { total, success } = loadFileMemory() ?? {};
 
 // * LOAD BALANCING ALGORITHM *
 const handler = async (req, res) => {
   total += 1;
-  writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
+  fibonacciKey = [];
+  lastService = await redisClient.get('lastService') ?? 0;
 
-  current = roundRobin(servers.length, current)
-  server = servers[current];
   const { fibonacci } = req.query ?? 0;
+  if(fibonacci) fibonacciKey.push(`fibonacci=${fibonacci}`);
+  else fibonacciKey.push('fibonacci=0');
 
-  try {
-    const response = await axios(server, { method: 'GET', params: { fibonacci } });
-    if(response.status === 200) {
-      success += 1;
-      writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
-    }
-    console.log(`response from ${server}\n`);
-    res.json(response.data);
-  } catch (error) {
-    console.log(`proxy to ${server} failed: ${error}`);
-    handler(req, res);
+  cacheKey = `http://localhost:800${lastService}/balance?` + fibonacciKey.join('&');
+  const cache = await redisClient.get(cacheKey);
+
+  if(cache) {
+    console.log(`Founded this fibonacci in cache: ${cacheKey}\ntimeSpent: 0 seconds\n`);
+
+    isCached = true;
+    const result = JSON.parse(cache);
+
+    res.json({
+      isCached,
+      timeSpent: `${0} seconds`,
+      result: `The result for the ${fibonacci}th fibonacci number is: ${result}`,
+      value: result,
+      time: 0
+    });
   }
+  else {
+    current = roundRobin(servers.length, current);
+    server = servers[current];
+
+    try {
+      const response = await axios(server, { method: 'GET', params: { fibonacci } });
+      if(response.status === 200) {
+        success += 1;
+        writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
+      }
+
+      const { result, timeSpent } = response?.data ?? {};
+
+      await redisClient.set(cacheKey, JSON.stringify(result));
+      console.log(`Not founded in cache, computational processing required: ${cacheKey}\ntimeSpent: ${timeSpent} seconds\n`);
+
+      res.json({
+        isCached,
+        timeSpent: `${timeSpent} seconds`,
+        result: `The result for the ${fibonacci}th fibonacci number is: ${result}`,
+        value: result,
+        time: timeSpent
+      });
+
+    } catch (error) {
+      console.log(`proxy to ${server} failed: ${error}`);
+      handler(req, res);
+    }
+  }
+  writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
 }
 
 app.use('/balance',(req, res) => { handler(req, res) });

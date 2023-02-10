@@ -15,7 +15,6 @@ app.use('/', async (req, res) => {
     let end = new Date().getTime();
 
     let timeSpent = timer(start, end);
-    console.log(`processing time: ${timeSpent} seconds`);
 
     let processingTime = 0, success = 0;
     if (!existsSync('./processing-time-edge.json')) {
@@ -31,10 +30,7 @@ app.use('/', async (req, res) => {
         writeFileSync('./processing-time-edge.json', JSON.stringify({ processingTime, success }));
     }
 
-    res.json({
-        "result": `Hello from edge server, the result for the ${fibonacci}th fibonacci number is: ${result}`,
-        "processing_time_in_edge": `${timer(start, end)} seconds`
-    });
+    res.json({ result, timeSpent, });
 });
 
 app.use('/health-check', async(req, res) => {
