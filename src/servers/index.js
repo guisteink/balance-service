@@ -74,6 +74,7 @@ const handler = async (req, res) => {
       const { result, timeSpent } = response?.data ?? {};
 
       await redisClient.set(cacheKey, JSON.stringify(result));
+      await redisClient.set('lastService', JSON.stringify(current));
       console.log(`Not founded in cache, computational processing required: ${cacheKey}\ntimeSpent: ${timeSpent} seconds\n`);
 
       res.json({
