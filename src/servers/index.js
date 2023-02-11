@@ -40,7 +40,6 @@ const handler = async (req, res) => {
   total += 1;
   fibonacciKey = [];
   lastService = await redisClient.get('lastService') ?? 0;
-  console.log(`last service executed: ${lastService}`);
 
   const { fibonacci } = req.query ?? 0;
   if(fibonacci) fibonacciKey.push(`fibonacci=${fibonacci}`);
@@ -62,7 +61,7 @@ const handler = async (req, res) => {
       result: `The result for the ${fibonacci}th fibonacci number is: ${result}`,
       value: result,
       time: 0,
-      // service: lastService
+      service: parseInt(lastService)
     });
   }
   else {
@@ -89,12 +88,12 @@ const handler = async (req, res) => {
         result: `The result for the ${fibonacci}th fibonacci number is: ${result}`,
         value: result,
         time: timeSpent,
-        // service: lastService
+        service: parseInt(current)
       });
 
     } catch (error) {
       console.log(`proxy to ${server} failed: ${error}`);
-      handler(req, res);
+      throw new Error(`proxy to ${server} failed: ${error}`);
     }
   }
   writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
