@@ -11,7 +11,9 @@ const port = 8000;
 const servers = [
   "http://localhost:8001/", // edge server -> weight 1
   // "http://15.228.239.16:8000/", // edge server on aws -> weight 1 :
+
   "http://localhost:8002/", // fog server -> weight 2
+
   "http://localhost:8003/", // cloud server -> weight 3
   // "http://35.178.232.188:8000/", // cloud server on aws -> weight 3
 ];
@@ -38,6 +40,7 @@ const handler = async (req, res) => {
   total += 1;
   fibonacciKey = [];
   lastService = await redisClient.get('lastService') ?? 0;
+  console.log(`last service executed: ${lastService}`);
 
   const { fibonacci } = req.query ?? 0;
   if(fibonacci) fibonacciKey.push(`fibonacci=${fibonacci}`);
@@ -47,9 +50,10 @@ const handler = async (req, res) => {
   const cache = await redisClient.get(cacheKey);
 
   if(cache) {
+    isCached = true;
+
     console.log(`Founded this fibonacci in cache: ${cacheKey}\ntimeSpent: 0 seconds\n`);
 
-    isCached = true;
     const result = JSON.parse(cache);
 
     res.json({
@@ -57,13 +61,16 @@ const handler = async (req, res) => {
       timeSpent: `${0} seconds`,
       result: `The result for the ${fibonacci}th fibonacci number is: ${result}`,
       value: result,
-      time: 0
+      time: 0,
+      // service: lastService
     });
   }
   else {
     current = roundRobin(servers.length, current);
     server = servers[current];
+    cacheKey = `http://localhost:800${current}/balance?` + fibonacciKey.join('&');
 
+    await redisClient.set('lastService', current);
     try {
       const response = await axios(server, { method: 'GET', params: { fibonacci } });
       if(response.status === 200) {
@@ -74,7 +81,6 @@ const handler = async (req, res) => {
       const { result, timeSpent } = response?.data ?? {};
 
       await redisClient.set(cacheKey, JSON.stringify(result));
-      await redisClient.set('lastService', JSON.stringify(current));
       console.log(`Not founded in cache, computational processing required: ${cacheKey}\ntimeSpent: ${timeSpent} seconds\n`);
 
       res.json({
@@ -82,7 +88,8 @@ const handler = async (req, res) => {
         timeSpent: `${timeSpent} seconds`,
         result: `The result for the ${fibonacci}th fibonacci number is: ${result}`,
         value: result,
-        time: timeSpent
+        time: timeSpent,
+        // service: lastService
       });
 
     } catch (error) {
