@@ -35,7 +35,7 @@ let current = 0,
 
 let { total, success } = loadFileMemory() ?? {};
 
-// * LOAD BALANCING ALGORITHM *
+// * LOAD BALANCING HANDLER *
 const handler = async (req, res) => {
   total += 1;
   fibonacciKey = [];
@@ -48,23 +48,7 @@ const handler = async (req, res) => {
   cacheKey = `http://localhost:800${lastService}/balance?` + fibonacciKey.join('&');
   const cache = await redisClient.get(cacheKey);
 
-  if(cache) {
-    isCached = true;
-
-    console.log(`Founded this fibonacci in cache: ${cacheKey}\ntimeSpent: 0 seconds\n`);
-
-    const result = JSON.parse(cache);
-
-    res.json({
-      isCached,
-      timeSpent: `${0} seconds`,
-      result: `The result for the ${fibonacci}th fibonacci number is: ${result}`,
-      value: result,
-      time: 0,
-      service: parseInt(lastService)
-    });
-  }
-  else {
+  if(!cache){
     current = roundRobin(servers.length, current);
     server = servers[current];
     cacheKey = `http://localhost:800${current}/balance?` + fibonacciKey.join('&');
@@ -78,9 +62,10 @@ const handler = async (req, res) => {
       }
 
       const { result, timeSpent } = response?.data ?? {};
-
       await redisClient.set(cacheKey, JSON.stringify(result));
-      console.log(`Not founded in cache, computational processing required: ${cacheKey}\ntimeSpent: ${timeSpent} seconds\n`);
+
+      // console.log(`Not founded in cache, computational processing required: ${cacheKey}\ntimeSpent: ${timeSpent} seconds\n`);
+      console.log(`[cached=${isCached}] [${cacheKey}] [${timeSpent} seconds]`)
 
       res.json({
         isCached,
@@ -90,12 +75,27 @@ const handler = async (req, res) => {
         time: timeSpent,
         service: parseInt(current)
       });
-
-    } catch (error) {
+    }
+    catch (error) {
       // console.log(`proxy to ${server} failed: ${error}`);
       throw new Error(`proxy to ${server} failed: ${error}`);
     }
   }
+
+  isCached = true;
+
+  // console.log(`Founded this fibonacci in cache: ${cacheKey}\ntimeSpent: 0 seconds\n`);
+  console.log(`[cached=${isCached}] [${cacheKey}] [0 seconds]`)
+
+  const result = JSON.parse(cache);
+  res.json({
+    isCached,
+    timeSpent: `${0} seconds`,
+    result: `The result for the ${fibonacci}th fibonacci number is: ${result}`,
+    value: result,
+    time: 0,
+    service: parseInt(lastService)
+  });
   writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
 }
 
@@ -111,7 +111,8 @@ app.use('/health-check', async(req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`\nStarting round-robin server on port ${port} 🔥🔥🔥\n`);
+    // console.log(`\nStarting round-robin server on port ${port} 🔥🔥🔥\n`);
+    console.log(`Initializing tests at ${new Date().toISOString()}\n\n`);
 })
 
 module.exports = app;

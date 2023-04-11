@@ -42,4 +42,5 @@ app.use('/health-check', async(req, res) => {
         });
 });
 
-app.listen(port, () => console.log(`[🔥] Fog service is now running on ${port}!!!\n`));
+// app.listen(port, () => console.log(`[🔥] Fog service is now running on ${port}!!!\n`));
+app.listen(port, () => {});
