@@ -66,7 +66,7 @@ const handler = async (req, res) => {
       const { result, timeSpent } = response?.data ?? {};
       await redisClient.set(cacheKey, JSON.stringify(result));
 
-      console.log(`[${cache ? 'isCached' : 'isntCached'}] [${cacheKey}] [${timeSpent} seconds]`)
+      console.log(`${cache ? 'isCached' : 'isntCached'},${cacheKey},${timeSpent} seconds`)
 
       return res.json({
         isCached,
@@ -83,7 +83,7 @@ const handler = async (req, res) => {
     }
   }
 
-  console.log(`[${cache ? 'isCached' : 'isntCached'}] [${cacheKey}] [0 seconds]`);
+  console.log(`${cache ? 'isCached' : 'isntCached'},${cacheKey},0 seconds`);
 
   const result = JSON.parse(cache);
 
@@ -113,7 +113,8 @@ app.use('/health-check', async(req, res) => {
 
 app.listen(port, () => {
     // console.log(`\nStarting round-robin server on port ${port} 🔥🔥🔥\n`);
-    console.log(`[Initializing tests at ${new Date().toISOString()}]\n`);
+    // console.log(`[Initializing tests at ${new Date().toISOString()}]\n\n`);
+    console.log(`isCached,cacheKey,timeSpent`);
 })
 
 module.exports = app;

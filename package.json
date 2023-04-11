@@ -34,7 +34,7 @@
     "server-ch": "concurrently \"npm run redis\" \"npm run load-balancer-ch\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
     "server-lc": "concurrently \"npm run redis\" \"npm run load-balancer-lc\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
 
-    "load-balancer-rr": "node src/servers/index.js --inspect > output",
+    "load-balancer-rr": "node src/servers/index.js --inspect > output.csv",
     "load-balancer-wrr": "node src/servers/weighted-round-robin-server.js",
     "load-balancer-ch": "node src/servers/consistent-hashing-server.js",
     "load-balancer-lc": "node src/servers/least-connection-server.js",
