@@ -21,6 +21,9 @@
   },
   "scripts": {
     "redis": "redis-server",
+    "redis-list": "redis-cli --scan | head -1000",
+    "redis-clear": "redis-cli flushall",
+
     "test:all": "jest --watchAll --detectOpenHandles",
     "test": "jest",
 

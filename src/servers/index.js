@@ -43,15 +43,17 @@ const handler = async (req, res) => {
 
   const { fibonacci } = req.query ?? 0;
   if(fibonacci) fibonacciKey.push(`fibonacci=${fibonacci}`);
-  else fibonacciKey.push('fibonacci=0');
+  else fibonacciKey.push(`fibonacci=0`);
 
-  cacheKey = `http://localhost:800${lastService}/balance?` + fibonacciKey.join('&');
+  // cacheKey = `http://localhost:800${lastService}/balance?` + fibonacciKey.join('&');
+  cacheKey = `http://localhost:${port}/balance?` + fibonacciKey.join('&');
   const cache = await redisClient.get(cacheKey);
 
   if(!cache){
     current = roundRobin(servers.length, current);
     server = servers[current];
-    cacheKey = `http://localhost:800${current}/balance?` + fibonacciKey.join('&');
+    // cacheKey = `http://localhost:800${current}/balance?` + fibonacciKey.join('&');
+    cacheKey = `http://localhost:${port}/balance?` + fibonacciKey.join('&');
 
     await redisClient.set('lastService', current);
     try {
@@ -64,10 +66,9 @@ const handler = async (req, res) => {
       const { result, timeSpent } = response?.data ?? {};
       await redisClient.set(cacheKey, JSON.stringify(result));
 
-      // console.log(`Not founded in cache, computational processing required: ${cacheKey}\ntimeSpent: ${timeSpent} seconds\n`);
-      console.log(`[cached=${isCached}] [${cacheKey}] [${timeSpent} seconds]`)
+      console.log(`[${cache ? 'isCached' : 'isntCached'}] [${cacheKey}] [${timeSpent} seconds]`)
 
-      res.json({
+      return res.json({
         isCached,
         timeSpent: `${timeSpent} seconds`,
         result: `The result for the ${fibonacci}th fibonacci number is: ${result}`,
@@ -82,13 +83,13 @@ const handler = async (req, res) => {
     }
   }
 
-  isCached = true;
-
-  // console.log(`Founded this fibonacci in cache: ${cacheKey}\ntimeSpent: 0 seconds\n`);
-  console.log(`[cached=${isCached}] [${cacheKey}] [0 seconds]`)
+  console.log(`[${cache ? 'isCached' : 'isntCached'}] [${cacheKey}] [0 seconds]`);
 
   const result = JSON.parse(cache);
-  res.json({
+
+  writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
+
+  return res.json({
     isCached,
     timeSpent: `${0} seconds`,
     result: `The result for the ${fibonacci}th fibonacci number is: ${result}`,
@@ -96,7 +97,7 @@ const handler = async (req, res) => {
     time: 0,
     service: parseInt(lastService)
   });
-  writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
+
 }
 
 app.use('/balance',(req, res) => { handler(req, res) });
@@ -112,7 +113,7 @@ app.use('/health-check', async(req, res) => {
 
 app.listen(port, () => {
     // console.log(`\nStarting round-robin server on port ${port} 🔥🔥🔥\n`);
-    console.log(`Initializing tests at ${new Date().toISOString()}\n\n`);
+    console.log(`[Initializing tests at ${new Date().toISOString()}]\n`);
 })
 
 module.exports = app;
