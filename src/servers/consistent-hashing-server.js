@@ -4,10 +4,11 @@ const { writeFileSync } = require('fs');
 const redis = require('redis');
 
 const roundRobin = require('../algorithms/round-robin');
+const ConsistentHash = require('../algorithms/consistent-hashing');
 const loadFileMemory = require('../helpers/handleFileMemory');
 
 const app = express();
-const port = 8000;
+const port = 3000;
 const servers = [
   "http://localhost:8001/", // edge server -> weight 1
   // "http://15.228.239.16:8000/", // edge server on aws -> weight 1 :
@@ -17,6 +18,8 @@ const servers = [
   "http://localhost:8003/", // cloud server -> weight 3
   // "http://35.178.232.188:8000/", // cloud server on aws -> weight 3
 ];
+
+const consistentHash = new ConsistentHash(servers);
 
 let current = 0,
   server,
@@ -65,9 +68,9 @@ const handler = async (req, res) => {
     });
   }
   else {
-    current = roundRobin(servers.length, current);
-    server = servers[current];
-    cacheKey = `http://localhost:800${current}/balance?` + fibonacciKey.join('&');
+    server = consistentHash.getServer(req);
+    current = servers.indexOf(server)+1;
+    cacheKey = `http://localhost:300${current}/balance?` + fibonacciKey.join('&');
 
     await redisClient.set('lastService', current);
     try {
@@ -92,7 +95,7 @@ const handler = async (req, res) => {
       });
 
     } catch (error) {
-      // console.log(`proxy to ${server} failed: ${error}`);
+      console.log(`proxy to ${server} failed: ${error}`);
       throw new Error(`proxy to ${server} failed: ${error}`);
     }
   }

@@ -8,7 +8,7 @@ const app = express()
 const port = 8002;
 
 app.use('/', async (req, res) => {
-    const { fibonacci } = req.query;
+    const { fibonacci } = req.query ?? 0;
 
     let start = new Date().getTime();
     let result = await fibonacciNumberRecursive(fibonacci)

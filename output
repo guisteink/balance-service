@@ -1,0 +1,24 @@
+
+Starting round-robin server on port 8000 🔥🔥🔥
+
+Founded this fibonacci in cache: http://localhost:8000/balance?fibonacci=6
+timeSpent: 0 seconds
+
+Founded this fibonacci in cache: http://localhost:8000/balance?fibonacci=0
+timeSpent: 0 seconds
+
+Founded this fibonacci in cache: http://localhost:8001/balance?fibonacci=20
+timeSpent: 0 seconds
+
+Founded this fibonacci in cache: http://localhost:8001/balance?fibonacci=21
+timeSpent: 0 seconds
+
+Founded this fibonacci in cache: http://localhost:8002/balance?fibonacci=14
+timeSpent: 0 seconds
+
+Not founded in cache, computational processing required: http://localhost:8002/balance?fibonacci=14
+timeSpent: 4.274 seconds
+
+Not founded in cache, computational processing required: http://localhost:8002/balance?fibonacci=14
+timeSpent: 0 seconds
+

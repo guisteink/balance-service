@@ -4,7 +4,6 @@ const { writeFileSync } = require('fs');
 
 const WRR = require('../algorithms/weighted-round-robin');
 const loadFileMemory = require('../helpers/handleFileMemory');
-const loadFile = require('../helpers/loadFile');
 
 const port = 9000;
 const app = express();

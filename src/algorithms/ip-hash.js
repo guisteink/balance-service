@@ -23,3 +23,5 @@ function hashIpAddress(ipAddress) {
 
   return normalizedHash;
 }
+
+module.exports = ipHashAlgorithm;

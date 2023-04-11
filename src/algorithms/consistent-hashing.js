@@ -13,7 +13,7 @@ class ConsistentHashing {
   }
 
   getServer(request) {
-    let hash = this._hash(request);
+    let hash = parseInt(this._hash(request.originalUrl));
     let index = this._findServerIndex(hash);
     return this.hashRing[this.sortedHashes[index]];
   }
@@ -39,9 +39,13 @@ class ConsistentHashing {
   }
 
   _hash(key) {
+    if (typeof key !== 'string' || !key) return null;
+    key = Buffer.from(key, 'utf-8');
     const crypto = require('crypto');
     const hash = crypto.createHash('sha256');
     hash.update(key);
     return hash.digest('hex');
   }
 }
+
+module.exports = ConsistentHashing;
