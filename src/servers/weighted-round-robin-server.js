@@ -2,8 +2,8 @@ const express = require('express');
 const axios = require('axios');
 const { writeFileSync } = require('fs');
 
-const WRR = require('../algorithms/weighted-round-robin');
-const loadFileMemory = require('../helpers/handleFileMemory');
+const WRR = require('../../algorithms/weighted-round-robin');
+const loadFileMemory = require('../../helpers/handleFileMemory');
 
 const port = 9000;
 const app = express();
@@ -33,6 +33,7 @@ const handler = async (req, res) => {
       success += 1;
       writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
     }
+    console.log(`response from ${server}\n`);
     res.json(response.data);
   } catch (error) {
     console.log(`proxy to ${server} failed: ${error}`);
@@ -51,6 +52,6 @@ app.use('/health-check', async(req, res) => {
       });
 });
 
-app.listen(port, () => {});
+app.listen(port, () => {})
 
 module.exports = app;

@@ -1,0 +1,2 @@
+true,http://localhost:9000/balance?fibonacci=29,1682098755020,29,0
+false,http://localhost:9000/balance?fibonacci=31,1682098778746,31,47.25

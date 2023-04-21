@@ -66,12 +66,9 @@ const handler = async (req, res) => {
       console.log(`${cache ? true : false},${cacheKey},${timestamp},${fibonacci},${timeSpent}`)
 
       return res.json({
-        isCached,
-        timeSpent: `${timeSpent} seconds`,
-        result: `The result for the ${fibonacci}th fibonacci number is: ${result}`,
         value: result,
         time: timeSpent,
-        service: parseInt(current)
+        service: current
       });
     }
     catch (error) {
@@ -87,12 +84,9 @@ const handler = async (req, res) => {
   writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
 
   return res.json({
-    isCached,
-    timeSpent: `${0} seconds`,
-    result: `The result for the ${fibonacci}th fibonacci number is: ${result}`,
     value: result,
     time: 0,
-    service: parseInt(lastService)
+    service: lastService
   });
 
 }

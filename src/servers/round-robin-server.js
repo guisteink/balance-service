@@ -17,8 +17,7 @@ const servers = [
 
 let current = 0,
   server,
-  fibonacciKey = [],
-  isCached = false;
+  fibonacciKey = [];
 
 let { total, success } = loadFileMemory() ?? {};
 
@@ -49,12 +48,9 @@ const handler = async (req, res) => {
     writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
 
     return res.json({
-      isCached,
-      timeSpent: `${timeSpent} seconds`,
-      result: `The result for the ${fibonacci}th fibonacci number is: ${result}`,
       value: result,
-      time: timeSpent,
-      service: parseInt(current)
+      time: 0,
+      service: lastService
     });
   }
   catch (error) {
