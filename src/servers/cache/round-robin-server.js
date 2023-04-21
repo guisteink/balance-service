@@ -3,17 +3,15 @@ const axios = require('axios');
 const { writeFileSync } = require('fs');
 const redis = require('redis');
 
-const roundRobin = require('../algorithms/round-robin');
-const loadFileMemory = require('../helpers/handleFileMemory');
+const roundRobin = require('../../algorithms/round-robin');
+const loadFileMemory = require('../../helpers/handleFileMemory');
 
 const app = express();
 const port = 8000;
 const servers = [
   "http://localhost:8001/", // edge server -> weight 1
   // "http://15.228.239.16:8000/", // edge server on aws -> weight 1 :
-
   "http://localhost:8002/", // fog server -> weight 2
-
   "http://localhost:8003/", // cloud server -> weight 3
   // "http://35.178.232.188:8000/", // cloud server on aws -> weight 3
 ];
@@ -37,6 +35,7 @@ let { total, success } = loadFileMemory() ?? {};
 
 // * LOAD BALANCING HANDLER *
 const handler = async (req, res) => {
+  let timestamp = new Date().getTime();
   total += 1;
   fibonacciKey = [];
   lastService = await redisClient.get('lastService') ?? 0;
@@ -45,14 +44,12 @@ const handler = async (req, res) => {
   if(fibonacci) fibonacciKey.push(`fibonacci=${fibonacci}`);
   else fibonacciKey.push(`fibonacci=0`);
 
-  // cacheKey = `http://localhost:800${lastService}/balance?` + fibonacciKey.join('&');
   cacheKey = `http://localhost:${port}/balance?` + fibonacciKey.join('&');
   const cache = await redisClient.get(cacheKey);
 
   if(!cache){
     current = roundRobin(servers.length, current);
     server = servers[current];
-    // cacheKey = `http://localhost:800${current}/balance?` + fibonacciKey.join('&');
     cacheKey = `http://localhost:${port}/balance?` + fibonacciKey.join('&');
 
     await redisClient.set('lastService', current);
@@ -66,7 +63,7 @@ const handler = async (req, res) => {
       const { result, timeSpent } = response?.data ?? {};
       await redisClient.set(cacheKey, JSON.stringify(result));
 
-      console.log(`${cache ? 'isCached' : 'isntCached'},${cacheKey},${timeSpent} seconds`)
+      console.log(`${cache ? true : false},${cacheKey},${timestamp},${fibonacci},${timeSpent}`)
 
       return res.json({
         isCached,
@@ -78,12 +75,12 @@ const handler = async (req, res) => {
       });
     }
     catch (error) {
-      // console.log(`proxy to ${server} failed: ${error}`);
+      console.log(`[FAILED] proxy to ${server} failed: ${error}`);
       throw new Error(`proxy to ${server} failed: ${error}`);
     }
   }
 
-  console.log(`${cache ? 'isCached' : 'isntCached'},${cacheKey},0 seconds`);
+  console.log(`${cache ? true : false},${cacheKey},${timestamp},${fibonacci},0`);
 
   const result = JSON.parse(cache);
 
@@ -111,10 +108,6 @@ app.use('/health-check', async(req, res) => {
       });
 });
 
-app.listen(port, () => {
-    // console.log(`\nStarting round-robin server on port ${port} 🔥🔥🔥\n`);
-    // console.log(`[Initializing tests at ${new Date().toISOString()}]\n\n`);
-    console.log(`isCached,cacheKey,timeSpent`);
-})
+app.listen(port, () => {})
 
 module.exports = app;
