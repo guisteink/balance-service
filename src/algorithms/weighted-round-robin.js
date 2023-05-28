@@ -36,7 +36,6 @@
 
     WRR.prototype.remove = function( key ){
 
-
         if( typeof key === 'function'){
 
             this.each( function( peer ){
@@ -53,7 +52,6 @@
             this._length--;
         }
     };
-
 
     WRR.prototype.each = function( fn , context ){
         for( var _key in this._peerMap ){
@@ -79,7 +77,6 @@
 
         return peer;
     };
-
 
     WRR.prototype.get = function(){
 
