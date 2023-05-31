@@ -18,7 +18,7 @@ app.use('/', async (req, res) => {
 });
 
 app.use('/health-check', async(req, res) => {
-    console.info(`health-check request received at ${new Date().toISOString()}`);
+    console.info(`[service] health-check request received at ${new Date().toISOString()}`);
     res
         .status(200)
         .send({

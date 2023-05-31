@@ -1,10 +1,8 @@
 const express = require('express');
 const axios = require('axios');
-const { writeFileSync } = require('fs');
 const redis = require('redis');
 
 const roundRobin = require('../../algorithms/round-robin');
-const loadFileMemory = require('../../helpers/handleFileMemory');
 
 const app = express();
 const port = 8000;
@@ -31,12 +29,9 @@ let current = 0,
   await redisClient.connect();
 })();
 
-let { total, success } = loadFileMemory() ?? {};
-
 // * LOAD BALANCING HANDLER *
 const handler = async (req, res) => {
   let timestamp = new Date().getTime();
-  total += 1;
   fibonacciKey = [];
   lastService = await redisClient.get('lastService') ?? 0;
 
@@ -55,10 +50,6 @@ const handler = async (req, res) => {
     await redisClient.set('lastService', current);
     try {
       const response = await axios(server, { method: 'GET', params: { fibonacci } });
-      if(response.status === 200) {
-        success += 1;
-        writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
-      }
 
       const { result, timeSpent } = response?.data ?? {};
       await redisClient.set(cacheKey, JSON.stringify(result));
@@ -72,7 +63,7 @@ const handler = async (req, res) => {
       });
     }
     catch (error) {
-      console.log(`[FAILED] proxy to ${server} failed: ${error}`);
+      console.log(`[FAIL] proxy to ${server} failed: ${error}`);
       throw new Error(`proxy to ${server} failed: ${error}`);
     }
   }
@@ -80,8 +71,6 @@ const handler = async (req, res) => {
   console.log(`${cache ? true : false},${cacheKey},${timestamp},${fibonacci},0`);
 
   const result = JSON.parse(cache);
-
-  writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
 
   return res.json({
     value: result,
@@ -102,6 +91,6 @@ app.use('/health-check', async(req, res) => {
       });
 });
 
-app.listen(port, () => {})
+app.listen(port)
 
 module.exports = app;

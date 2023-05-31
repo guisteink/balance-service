@@ -1,11 +1,9 @@
 const express = require('express');
 const axios = require('axios');
-const { writeFileSync } = require('fs');
-
 const roundRobin = require('../algorithms/round-robin');
-const loadFileMemory = require('../helpers/handleFileMemory');
 
 const app = express();
+//todo: .env
 const port = 8000;
 const servers = [
   "http://localhost:8001/", // edge server -> weight 1
@@ -19,12 +17,9 @@ let current = 0,
   server,
   fibonacciKey = [];
 
-let { total, success } = loadFileMemory() ?? {};
-
 // * LOAD BALANCING HANDLER *
 const handler = async (req, res) => {
   let timestamp = new Date().getTime();
-  total += 1;
   fibonacciKey = [];
 
   const { fibonacci } = req.query ?? 0;
@@ -36,16 +31,10 @@ const handler = async (req, res) => {
 
   try {
     const response = await axios(server, { method: 'GET', params: { fibonacci } });
-    if(response.status === 200) {
-      success += 1;
-      writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
-    }
 
     const { result, timeSpent } = response?.data ?? {};
 
     console.log(`${timestamp},${fibonacci},${timeSpent}`)
-
-    writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
 
     return res.json({
       value: result,
@@ -69,6 +58,6 @@ app.use('/health-check', async(req, res) => {
       });
 });
 
-app.listen(port, () => {})
+app.listen(port)
 
 module.exports = app;

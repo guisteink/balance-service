@@ -1,15 +1,14 @@
 const express = require('express');
 const axios = require('axios');
-const { writeFileSync } = require('fs');
 const redis = require('redis');
 
 const WRR = require('../../algorithms/weighted-round-robin');
-const loadFileMemory = require('../../helpers/handleFileMemory');
 
 const port = 9000;
 const app = express();
 const servers = new WRR();
 
+//todo: env
 for(let i = 0; i <= 2; i++) {
     servers.add({
         uri: `http://localhost:800${i+1}/`,
@@ -20,10 +19,7 @@ for(let i = 0; i <= 2; i++) {
 let server,
   redisClient,
   cacheKey,
-  isCached,
   lastService;
-
-let { total, success } = loadFileMemory() ?? 0;
 
 (async () => {
   redisClient = new redis.createClient();
@@ -35,11 +31,8 @@ let { total, success } = loadFileMemory() ?? 0;
 // * LOAD BALANCING ALGORITHM *
 const handler = async (req, res) => {
   let timestamp = new Date().getTime();
-  total += 1;
   fibonacciKey = [];
   lastService = await redisClient.get('lastService') ?? 0;
-
-  writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
 
   const { fibonacci } = req.query ?? 0;
   if(fibonacci) fibonacciKey.push(`fibonacci=${fibonacci}`);
@@ -56,10 +49,6 @@ const handler = async (req, res) => {
 
     try {
       const response = await axios(server, { method: 'GET', params: { fibonacci } });
-      if(response.status === 200) {
-        success += 1;
-        writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
-      }
 
       const { result, timeSpent } = response?.data ?? {};
       await redisClient.set(cacheKey, JSON.stringify(result));
@@ -72,14 +61,13 @@ const handler = async (req, res) => {
         service: server
       });
     } catch (error) {
-      console.log(`[FAILED] proxy to ${server} failed: ${error}`);
+      console.log(`[FAIL] proxy to ${server} failed: ${error}`);
       throw new Error(`proxy to ${server} failed: ${error}`);
     }
   }
 
   console.log(`${cache ? true : false},${cacheKey},${timestamp},${fibonacci},0`);
   const result = JSON.parse(cache);
-  writeFileSync('./total-reqs.json', JSON.stringify({ total, success }));
 
   return res.json({
     value: result,
@@ -99,6 +87,6 @@ app.use('/health-check', async(req, res) => {
       });
 });
 
-app.listen(port, () => {});
+app.listen(port);
 
 module.exports = app;
