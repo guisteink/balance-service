@@ -1,6 +1,4 @@
 const express = require('express')
-const { readFileSync, existsSync, writeFileSync } = require('fs');
-
 const fibonacciNumberRecursive = require('../helpers/fibonacciNumberRecursive');
 const timer = require('../helpers/timer');
 
@@ -16,25 +14,11 @@ app.use('/', async (req, res) => {
 
     let timeSpent = timer(start, end);
 
-    let processingTime = 0, success = 0;
-    if (!existsSync('./processing-time-edge.json')) {
-        writeFileSync('./processing-time-edge.json', JSON.stringify({ processingTime, success }));
-    } else {
-        const lastRunStr = readFileSync('./processing-time-edge.json');
-        const lastRun = JSON.parse(lastRunStr);
-        processingTime += lastRun.processingTime;
-        success += lastRun.success;
-
-        processingTime = processingTime + timeSpent;
-        success += 1;
-        writeFileSync('./processing-time-edge.json', JSON.stringify({ processingTime, success }));
-    }
-
     res.json({ result, timeSpent, });
 });
 
 app.use('/health-check', async(req, res) => {
-    console.info(`[edge] health-check request received at ${new Date().toISOString()}`);
+    console.info(`health-check request received at ${new Date().toISOString()}`);
     res
         .status(200)
         .send({
@@ -42,5 +26,4 @@ app.use('/health-check', async(req, res) => {
         });
 });
 
-// app.listen(port, () => console.log(`[🔥] Edge service is now running on ${port}!!!\n`));
-app.listen(port, () => {});
+app.listen(port);
