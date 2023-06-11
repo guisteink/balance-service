@@ -6,6 +6,7 @@ const roundRobin = require('../../algorithms/round-robin');
 
 const app = express();
 const port = 8000;
+//todo: env
 const servers = [
   "http://localhost:8001/", // edge server -> weight 1
   // "http://15.228.239.16:8000/", // edge server on aws -> weight 1 :

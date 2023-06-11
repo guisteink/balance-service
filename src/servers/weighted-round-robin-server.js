@@ -6,6 +6,7 @@ const port = 9000;
 const app = express();
 const servers = new WRR();
 
+//todo: env
 for(let i = 0; i <= 2; i++) {
     servers.add({
         uri: `http://localhost:800${i+1}/`,
@@ -24,16 +25,17 @@ const handler = async (req, res) => {
     const response = await axios(server, { method: 'GET', params: { fibonacci } });
     const { result, timeSpent } = response?.data ?? {};
 
-    console.log(`${timestamp},${fibonacci},${timeSpent}`)
+    console.log(`${timestamp},${timeSpent},${fibonacci}`)
 
     return res.json({
       value: result,
-      time: 0,
-      service: lastService
+      time: 0
     });
   } catch (error) {
+    // todo: testar ponto de falha caso 1 server caia, redirect handler
     console.log(`proxy to ${server} failed: ${error}`);
     handler(req, res);
+    // throw new Error(`proxy to ${server} failed: ${error}`);
   }
 }
 

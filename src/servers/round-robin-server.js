@@ -34,16 +34,18 @@ const handler = async (req, res) => {
 
     const { result, timeSpent } = response?.data ?? {};
 
-    console.log(`${timestamp},${fibonacci},${timeSpent}`)
+    console.log(`${timestamp},${timeSpent},${fibonacci}`)
 
     return res.json({
       value: result,
       time: 0,
-      service: lastService
     });
   }
   catch (error) {
-    throw new Error(`proxy to ${server} failed: ${error}`);
+    // todo: testar ponto de falha caso 1 server caia, redirect handler
+    console.log(`proxy to ${server} failed: ${error}`);
+    handler(req, res);
+    // throw new Error(`proxy to ${server} failed: ${error}`);
   }
 }
 

@@ -27,18 +27,22 @@
     "test:all": "jest --watchAll --detectOpenHandles",
     "test": "jest",
 
+    "least-connection": "node src/servers/least-connection",
+    "server-lc": "concurrently \"npm run load-balancer-lc\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
 
     "server-rr-cached": "concurrently \"npm run redis\" \"npm run load-balancer-rr-cached\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
-    "server-rr": "concurrently \"npm run redis\" \"npm run load-balancer-rr\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
+    "server-rr": "concurrently \"npm run load-balancer-rr\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
 
     "server-wrr": "concurrently \"npm run redis\" \"npm run load-balancer-wrr\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
-    "server-wrr-cached": "concurrently \"npm run redis\" \"npm run load-balancer-wrr-cached\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
+    "server-wrr-cached": "concurrently \"npm run load-balancer-wrr-cached\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
 
-    "load-balancer-rr-cached": "node src/servers/cache/round-robin-server.js --inspect > output-rr.csv",
-    "load-balancer-rr": "node src/servers/round-robin-server.js --inspect > output-rr.csv",
+    "load-balancer-rr-cached": "node src/servers/cache/round-robin-server.js --inspect > output/cache/rr.csv",
+    "load-balancer-rr": "node src/servers/round-robin-server.js --inspect > output/rr.csv",
 
-    "load-balancer-wrr-cached": "node src/servers/cache/weighted-round-robin-server.js > output-wrr-cached.csv",
-    "load-balancer-wrr": "node src/servers/weighted-round-robin-server.js > output-wrr-cached.csv",
+    "load-balancer-wrr-cached": "node src/servers/cache/weighted-round-robin-server.js > output/cache/wrr.csv",
+    "load-balancer-wrr": "node src/servers/weighted-round-robin-server.js > output/wrr.csv",
+
+    "load-balancer-lc": "node src/servers/least-connection.js > output/lc.csv",
 
     "service-one": "node --stack-size=32000 src/mock-server/server-one.js",
     "service-two": "node --stack-size=32000 src/mock-server/server-two.js",
