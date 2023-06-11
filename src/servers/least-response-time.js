@@ -39,7 +39,7 @@ const handler = async (req, res) => {
 
     lrt.updateResponseTime(server, timeSpent);
 
-    console.log(`${timestamp},${timeSpent},${fibonacci}`);
+    console.log(`${timestamp},${timeSpent},${fibonacci},\t,${server},${timeSpent}`);
 
     return res.json({
       value: result,

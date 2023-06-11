@@ -53,7 +53,7 @@ const handler = async (req, res) => {
       const { result, timeSpent } = response?.data ?? {};
       await redisClient.set(cacheKey, JSON.stringify(result));
 
-      console.log(`${cache ? true : false},${cacheKey},${timestamp},${fibonacci},${timeSpent}`)
+      console.log(`${timestamp},${timeSpent},${fibonacci}`);
 
       return res.json({
         value: result,
@@ -66,7 +66,7 @@ const handler = async (req, res) => {
     }
   }
 
-  console.log(`${cache ? true : false},${cacheKey},${timestamp},${fibonacci},0`);
+  console.log(`${timestamp},${0},${fibonacci}`);
   const result = JSON.parse(cache);
 
   return res.json({
