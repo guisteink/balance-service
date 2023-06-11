@@ -29,13 +29,14 @@ const handler = async (req, res) => {
 
     return res.json({
       value: result,
-      time: 0
+      time: timeSpent,
+      server
     });
   } catch (error) {
     // todo: testar ponto de falha caso 1 server caia, redirect handler
-    console.log(`proxy to ${server} failed: ${error}`);
-    handler(req, res);
-    // throw new Error(`proxy to ${server} failed: ${error}`);
+    // console.log(`proxy to ${server} failed: ${error}`);
+    // handler(req, res);
+    throw new Error(`proxy to ${server} failed: ${error}`);
   }
 }
 

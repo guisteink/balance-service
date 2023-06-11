@@ -27,7 +27,8 @@
     "test:all": "jest --watchAll --detectOpenHandles",
     "test": "jest",
 
-    "least-connection": "node src/servers/least-connection",
+    "server-lrt": "concurrently \"npm run load-balancer-lrt\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
+
     "server-lc": "concurrently \"npm run load-balancer-lc\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
 
     "server-rr-cached": "concurrently \"npm run redis\" \"npm run load-balancer-rr-cached\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
@@ -43,6 +44,8 @@
     "load-balancer-wrr": "node src/servers/weighted-round-robin-server.js > output/wrr.csv",
 
     "load-balancer-lc": "node src/servers/least-connection.js > output/lc.csv",
+
+    "load-balancer-lrt": "node src/servers/least-response-time.js > output/lrt.csv",
 
     "service-one": "node --stack-size=32000 src/mock-server/server-one.js",
     "service-two": "node --stack-size=32000 src/mock-server/server-two.js",

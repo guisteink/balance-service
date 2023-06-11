@@ -27,7 +27,7 @@ class LeastResponseTime {
 
     for (let i = 0; i < this.servers.length; i++) {
       const server = this.servers[i];
-      if (server.responseTime < min) {
+      if (server.responseTime <= min) {
         min = server.responseTime;
         nextURL = server.url;
       }

@@ -11,12 +11,12 @@ const servers = [
   new URL("http://localhost:8003/")
 ];
 
-let current = 0,
-  server,
+let server,
   fibonacciKey = [];
 
-const balancer = leastConnections.New(servers);
+const lc = leastConnections.New(servers);
 
+// * LOAD BALANCING HANDLER *
 const handler = async (req, res) => {
   let timestamp = new Date().getTime();
   fibonacciKey = [];
@@ -25,27 +25,30 @@ const handler = async (req, res) => {
   if(fibonacci) fibonacciKey.push(`fibonacci=${fibonacci}`);
   else fibonacciKey.push(`fibonacci=0`);
 
-  const [nextURL] = balancer.next();
+  const [nextURL, done] = lc.next();
   const { origin } = nextURL ?? {};
   server = origin;
 
   try {
     const response = await axios(server, { method: 'GET', params: { fibonacci } });
 
+    done();
+
     const { result, timeSpent } = response?.data ?? {};
 
-    console.log(`${timestamp},${timeSpent},${fibonacci}`)
+    console.log(`${timestamp},${timeSpent},${fibonacci}`);
 
     return res.json({
       value: result,
-      time: 0,
+      time: timeSpent,
+      server
     });
   }
   catch (error) {
     // todo: testar ponto de falha caso 1 server caia, redirect handler
-    console.log(`proxy to ${server} failed: ${error}`);
-    handler(req, res);
-    // throw new Error(`proxy to ${server} failed: ${error}`);
+    // console.log(`proxy to ${server} failed: ${error}`);
+    // handler(req, res);
+    throw new Error(`proxy to ${server} failed: ${error}`);
   }
 }
 
