@@ -12,9 +12,9 @@ app.use('/', async (req, res) => {
     let result = await fibonacciNumberRecursive(fibonacci)
     let end = new Date().getTime();
 
-    let timeSpent = timer(start, end);
+    let time = timer(start, end);
 
-    res.json({ result, timeSpent, });
+    res.send({ result, time, });
 });
 
 app.use('/health-check', async(req, res) => {

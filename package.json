@@ -32,9 +32,9 @@
     "server-lc": "concurrently \"npm run load-balancer-lc\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
 
     "server-rr-cached": "concurrently \"npm run redis\" \"npm run load-balancer-rr-cached\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
-    "server-rr": "concurrently \"npm run load-balancer-rr\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
+    "server-rr": "concurrently \"npm run load-balancer-rr\" \"npm run service-one\"",
 
-    "server-wrr": "concurrently \"npm run redis\" \"npm run load-balancer-wrr\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
+    "server-wrr": "concurrently \"npm run load-balancer-wrr\" \"npm run service-one\"",
     "server-wrr-cached": "concurrently \"npm run load-balancer-wrr-cached\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
 
     "load-balancer-rr-cached": "node src/servers/cache/round-robin-server.js --inspect > output/cache/rr.csv",

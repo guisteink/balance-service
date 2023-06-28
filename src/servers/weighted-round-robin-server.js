@@ -1,35 +1,40 @@
 const express = require('express');
 const axios = require('axios');
-const WRR = require('../../algorithms/weighted-round-robin');
+const WRR = require('../algorithms/weighted-round-robin');
 
 const port = 9000;
 const app = express();
 const servers = new WRR();
 
 //todo: env
-for(let i = 0; i <= 2; i++) {
-    servers.add({
-        uri: `http://localhost:800${i+1}/`,
-        weight: i+1
-    });
-}
+// for(let i = 0; i <= 2; i++) {
+//     servers.add({
+//         uri: `http://localhost:800${i+1}/`,
+//         weight: i+1
+//     });
+// }
+
+servers.add({ uri: `http://localhost:8001/`, weight: 1 }); // edge server -> weight 1
+servers.add({ uri: `http://15.229.85.148:3000/`, weight: 2 }); // fog server -> weight 2
+servers.add({ uri: `http://54.78.193.27:3000/`, weight: 3 }); // cloud server -> weight 3
 
 let server;
 
 // * LOAD BALANCING ALGORITHM *
 const handler = async (req, res) => {
+  let timestamp = new Date().getTime();
   server = servers.get().uri;
   const { fibonacci } = req.query ?? 0;
 
   try {
     const response = await axios(server, { method: 'GET', params: { fibonacci } });
-    const { result, timeSpent } = response?.data ?? {};
+    const { result, time } = response?.data ?? {};
 
-    console.log(`${timestamp},${timeSpent},${fibonacci}`)
+    console.log(`${server},${timestamp},${time},${fibonacci}`)
 
     return res.json({
       value: result,
-      time: timeSpent,
+      time,
       server
     });
   } catch (error) {
