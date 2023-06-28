@@ -27,7 +27,7 @@
     "test:all": "jest --watchAll --detectOpenHandles",
     "test": "jest",
 
-    "server-lrt": "concurrently \"npm run load-balancer-lrt\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
+    "server-lrt": "concurrently \"npm run load-balancer-lrt\" \"npm run service-one\"",
 
     "server-lc": "concurrently \"npm run load-balancer-lc\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
 

@@ -6,11 +6,18 @@ const port = 6000;
 const app = express();
 const DEFAULT_RESPONSE_TIME = 0;
 
+// const servers = [
+//   "http://localhost:8001/",
+//   "http://localhost:8002/",
+//   "http://localhost:8003/"
+// ];
+
 const servers = [
-  "http://localhost:8001/",
-  "http://localhost:8002/",
-  "http://localhost:8003/"
+  "http://localhost:8001/", // edge server -> weight 1
+  "http://15.229.85.148:3000/", // fog server -> weight 2
+  "http://54.78.193.27:3000/", // cloud server -> weight 3
 ];
+
 
 let server,
   fibonacciKey = [];
@@ -35,15 +42,15 @@ const handler = async (req, res) => {
   try {
     const response = await axios(server, { method: 'GET', params: { fibonacci } });
 
-    const { result, timeSpent } = response?.data ?? {};
+    const { result, time} = response?.data ?? {};
 
-    lrt.updateResponseTime(server, timeSpent);
+    lrt.updateResponseTime(server, time);
 
-    console.log(`${timestamp},${timeSpent},${fibonacci},\t,${server},${timeSpent}`);
+    console.log(`${server},${timestamp},${time},${fibonacci}`)
 
     return res.json({
       value: result,
-      time: timeSpent,
+      time,
       server
     });
   }
