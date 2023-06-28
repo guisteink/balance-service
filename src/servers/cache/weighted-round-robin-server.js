@@ -9,12 +9,15 @@ const app = express();
 const servers = new WRR();
 
 //todo: env
-for(let i = 0; i <= 2; i++) {
-    servers.add({
-        uri: `http://localhost:800${i+1}/`,
-        weight: i+1
-    });
-}
+// for(let i = 0; i <= 2; i++) {
+//     servers.add({
+//         uri: `http://localhost:800${i+1}/`,
+//         weight: i+1
+//     });
+// }
+servers.add({ uri: `http://localhost:8001/`, weight: 1 }); // edge server -> weight 1
+servers.add({ uri: `http://15.229.85.148:3000/`, weight: 2 }); // fog server -> weight 2
+servers.add({ uri: `http://54.78.193.27:3000/`, weight: 3 }); // cloud server -> weight 3
 
 let server,
   redisClient,
@@ -50,14 +53,14 @@ const handler = async (req, res) => {
     try {
       const response = await axios(server, { method: 'GET', params: { fibonacci } });
 
-      const { result, timeSpent } = response?.data ?? {};
+      const { result, time } = response?.data ?? {};
       await redisClient.set(cacheKey, JSON.stringify(result));
 
-      console.log(`${timestamp},${timeSpent},${fibonacci}`);
+      console.log(`${server},${timestamp},${time},${fibonacci}`)
 
       return res.json({
         value: result,
-        time: timeSpent,
+        time,
         service: server
       });
     } catch (error) {
@@ -66,7 +69,7 @@ const handler = async (req, res) => {
     }
   }
 
-  console.log(`${timestamp},${0},${fibonacci}`);
+  console.log(`${server},${timestamp},${0},${fibonacci}`);
   const result = JSON.parse(cache);
 
   return res.json({

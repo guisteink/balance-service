@@ -7,12 +7,17 @@ const roundRobin = require('../../algorithms/round-robin');
 const app = express();
 const port = 8000;
 //todo: env
+// const servers = [
+//   "http://localhost:8001/", // edge server -> weight 1
+//   // "http://15.228.239.16:8000/", // edge server on aws -> weight 1 :
+//   "http://localhost:8002/", // fog server -> weight 2
+//   "http://localhost:8003/", // cloud server -> weight 3
+//   // "http://35.178.232.188:8000/", // cloud server on aws -> weight 3
+// ];
 const servers = [
   "http://localhost:8001/", // edge server -> weight 1
-  // "http://15.228.239.16:8000/", // edge server on aws -> weight 1 :
-  "http://localhost:8002/", // fog server -> weight 2
-  "http://localhost:8003/", // cloud server -> weight 3
-  // "http://35.178.232.188:8000/", // cloud server on aws -> weight 3
+  "http://15.229.85.148:3000/", // fog server -> weight 2
+  "http://54.78.193.27:3000/", // cloud server -> weight 3
 ];
 
 let current = 0,
@@ -20,7 +25,6 @@ let current = 0,
   redisClient,
   cacheKey,
   fibonacciKey = [],
-  isCached = false,
   lastService = 0;
 
 (async () => {
@@ -52,14 +56,14 @@ const handler = async (req, res) => {
     try {
       const response = await axios(server, { method: 'GET', params: { fibonacci } });
 
-      const { result, timeSpent } = response?.data ?? {};
+      const { result, time } = response?.data ?? {};
       await redisClient.set(cacheKey, JSON.stringify(result));
 
-      console.log(`${timestamp},${timeSpent},${fibonacci}`)
+      console.log(`${server},${timestamp},${time},${fibonacci}`)
 
       return res.json({
         value: result,
-        time: timeSpent,
+        time,
         service: current
       });
     }
@@ -69,7 +73,7 @@ const handler = async (req, res) => {
     }
   }
 
-  console.log(`${timestamp},${0},${fibonacci}`)
+  console.log(`${server},${timestamp},${0},${fibonacci}`)
 
   const result = JSON.parse(cache);
 
