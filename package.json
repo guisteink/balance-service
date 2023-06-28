@@ -29,7 +29,7 @@
 
     "server-lrt": "concurrently \"npm run load-balancer-lrt\" \"npm run service-one\"",
 
-    "server-lc": "concurrently \"npm run load-balancer-lc\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
+    "server-lc": "concurrently \"npm run load-balancer-lc\" \"npm run service-one\"",
 
     "server-rr-cached": "concurrently \"npm run redis\" \"npm run load-balancer-rr-cached\" \"npm run service-one\" \"npm run service-two\" \"npm run service-three\"",
     "server-rr": "concurrently \"npm run load-balancer-rr\" \"npm run service-one\"",

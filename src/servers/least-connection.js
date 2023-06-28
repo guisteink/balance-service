@@ -5,10 +5,15 @@ const leastConnections = require('../algorithms/least-connection');
 const port = 7000;
 const app = express();
 
+// const servers = [
+//   new URL("http://localhost:8001/"),
+//   new URL("http://localhost:8002/"),
+//   new URL("http://localhost:8003/")
+// ];
 const servers = [
   new URL("http://localhost:8001/"),
-  new URL("http://localhost:8002/"),
-  new URL("http://localhost:8003/")
+  new URL("http://15.229.85.148:3000/"),
+  new URL("http://54.78.193.27:3000/")
 ];
 
 let server,
@@ -34,13 +39,13 @@ const handler = async (req, res) => {
 
     done();
 
-    const { result, timeSpent } = response?.data ?? {};
+    const { result, time } = response?.data ?? {};
 
-    console.log(`${timestamp},${timeSpent},${fibonacci}`);
+    console.log(`${server},${timestamp},${time},${fibonacci}`)
 
     return res.json({
       value: result,
-      time: timeSpent,
+      time: time,
       server
     });
   }

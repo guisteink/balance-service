@@ -1,1 +1,174 @@
-{"client":"Thunder Client","collectionName":"tcc","dateExported":"2023-01-15T18:52:04.075Z","version":"1.1","folders":[],"requests":[{"_id":"8aea7076-a64e-4c3c-bba7-14c4fb051ad8","colId":"58fdba60-2b8a-436f-a92e-456ee502f8b4","containerId":"","name":"[load-balancer] health check","url":"http://localhost:8000/health-check","method":"GET","sortNum":10000,"created":"2023-01-14T18:46:57.031Z","modified":"2023-01-14T18:48:39.771Z","headers":[],"params":[],"tests":[]},{"_id":"df5c0140-ffa0-4a0c-8fdd-8ddfedd318e5","colId":"58fdba60-2b8a-436f-a92e-456ee502f8b4","containerId":"","name":"[load-balancer] fibonnaci","url":"http://localhost:8000/balance?fibonacci=3","method":"POST","sortNum":20000,"created":"2023-01-14T18:49:04.242Z","modified":"2023-01-15T18:50:28.910Z","headers":[],"params":[{"name":"fibonacci","value":"3","isPath":false}],"tests":[]}]}
+{
+    "client": "Thunder Client",
+    "collectionName": "balance-service",
+    "dateExported": "2023-06-28T23:33:43.742Z",
+    "version": "1.1",
+    "folders": [
+        {
+            "_id": "6c4c1251-35fb-4e36-8529-e723250c8fae",
+            "name": "round robin",
+            "containerId": "",
+            "created": "2023-06-27T22:57:04.661Z",
+            "sortNum": 20000
+        },
+        {
+            "_id": "6e965c4a-9fb3-4d01-a23d-43ededd08008",
+            "name": "weighted round robin",
+            "containerId": "",
+            "created": "2023-06-28T23:21:58.567Z",
+            "sortNum": 30000
+        },
+        {
+            "_id": "3d85aa78-2877-40fa-97e9-da9dad715035",
+            "name": "least response time",
+            "containerId": "",
+            "created": "2023-06-28T23:27:45.417Z",
+            "sortNum": 40000
+        },
+        {
+            "_id": "c6accfb9-55fa-4e59-a07f-2f2eab240db2",
+            "name": "least connection",
+            "containerId": "",
+            "created": "2023-06-28T23:30:27.326Z",
+            "sortNum": 50000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "f49b87bb-aa31-44ee-86be-7197bb9ba146",
+            "colId": "a380738a-a5ce-45e9-87ca-2ee271a18b4a",
+            "containerId": "6c4c1251-35fb-4e36-8529-e723250c8fae",
+            "name": "fibonacci",
+            "url": "http://localhost:8000/balance?fibonacci=28",
+            "method": "GET",
+            "sortNum": 50000,
+            "created": "2023-06-28T22:59:37.014Z",
+            "modified": "2023-06-28T23:01:57.880Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "fibonacci",
+                    "value": "28",
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
+            "_id": "d8736cb8-5ca8-4fe9-8812-dc6786a6861e",
+            "colId": "a380738a-a5ce-45e9-87ca-2ee271a18b4a",
+            "containerId": "6e965c4a-9fb3-4d01-a23d-43ededd08008",
+            "name": "load balancer",
+            "url": "http://localhost:9000/balance?fibonacci=36",
+            "method": "GET",
+            "sortNum": 50000,
+            "created": "2023-06-28T23:22:08.008Z",
+            "modified": "2023-06-28T23:25:13.781Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "fibonacci",
+                    "value": "36",
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
+            "_id": "f39553fe-bf5a-4ab7-a7a6-a34e3f16bf80",
+            "colId": "a380738a-a5ce-45e9-87ca-2ee271a18b4a",
+            "containerId": "6e965c4a-9fb3-4d01-a23d-43ededd08008",
+            "name": "health-check",
+            "url": "http://localhost:9000/health-check",
+            "method": "GET",
+            "sortNum": 60000,
+            "created": "2023-06-28T23:24:23.668Z",
+            "modified": "2023-06-28T23:24:32.633Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "5f5a3604-53c0-4022-9c4e-5f153bfcf6e7",
+            "colId": "a380738a-a5ce-45e9-87ca-2ee271a18b4a",
+            "containerId": "6c4c1251-35fb-4e36-8529-e723250c8fae",
+            "name": "health-check",
+            "url": "http://localhost:8000/health-check",
+            "method": "GET",
+            "sortNum": 70000,
+            "created": "2023-06-28T22:59:17.423Z",
+            "modified": "2023-06-28T22:59:26.989Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "f5b3c981-3542-4077-b7e2-0dd4c47d489d",
+            "colId": "a380738a-a5ce-45e9-87ca-2ee271a18b4a",
+            "containerId": "3d85aa78-2877-40fa-97e9-da9dad715035",
+            "name": "fibonacci",
+            "url": "http://localhost:6000/balance?fibonacci=25",
+            "method": "GET",
+            "sortNum": 80000,
+            "created": "2023-06-28T23:28:10.899Z",
+            "modified": "2023-06-28T23:28:22.000Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "fibonacci",
+                    "value": "25",
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
+            "_id": "ebd0c183-0a91-414f-9240-512b3e1aa5d5",
+            "colId": "a380738a-a5ce-45e9-87ca-2ee271a18b4a",
+            "containerId": "3d85aa78-2877-40fa-97e9-da9dad715035",
+            "name": "health-check",
+            "url": "http://localhost:6000/health-check",
+            "method": "GET",
+            "sortNum": 90000,
+            "created": "2023-06-28T23:29:07.727Z",
+            "modified": "2023-06-28T23:29:14.265Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "67143b7c-abb6-4a1d-bf4c-c8d5dd5fc2dd",
+            "colId": "a380738a-a5ce-45e9-87ca-2ee271a18b4a",
+            "containerId": "c6accfb9-55fa-4e59-a07f-2f2eab240db2",
+            "name": "fibonacci",
+            "url": "http://localhost:7000/balance?fibonacci=25",
+            "method": "GET",
+            "sortNum": 110000,
+            "created": "2023-06-28T23:30:31.798Z",
+            "modified": "2023-06-28T23:32:53.744Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "fibonacci",
+                    "value": "25",
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
+            "_id": "7362ac4a-374e-4cd1-bfbc-43f3a51a2230",
+            "colId": "a380738a-a5ce-45e9-87ca-2ee271a18b4a",
+            "containerId": "c6accfb9-55fa-4e59-a07f-2f2eab240db2",
+            "name": "health-check",
+            "url": "http://localhost:7000/health-check",
+            "method": "GET",
+            "sortNum": 120000,
+            "created": "2023-06-28T23:30:37.950Z",
+            "modified": "2023-06-28T23:33:36.977Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        }
+    ]
+}
