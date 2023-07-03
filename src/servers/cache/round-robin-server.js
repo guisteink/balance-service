@@ -16,8 +16,8 @@ const port = 8000;
 // ];
 const servers = [
   "http://localhost:8001/", // edge server -> weight 1
-  "http://15.229.85.148:3000/", // fog server -> weight 2
-  "http://54.78.193.27:3000/", // cloud server -> weight 3
+  "http://18.228.19.9:3000/", // fog server -> weight 2
+  "http://3.252.123.45:3000/", // cloud server -> weight 3
 ];
 
 let current = 0,

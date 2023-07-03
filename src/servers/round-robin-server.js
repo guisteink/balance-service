@@ -1,20 +1,20 @@
 const express = require('express');
 const axios = require('axios');
 const roundRobin = require('../algorithms/round-robin');
+require('dotenv').config();
 
 const app = express();
-//todo: .env
+
 const port = 8000;
-// const servers = [
-//   // "http://localhost:8001/", // edge server -> weight 1
-//   // "http://localhost:8002/", // fog server -> weight 2
-//   // "http://localhost:8003/", // cloud server -> weight 3
-// ];
+
+const cloud_server = process.env.CLOUD;
+const fog_server = process.env.FOG;
+const edge_server = process.env.EDGE;
 
 const servers = [
-  "http://localhost:8001/", // edge server -> weight 1
-  "http://15.229.85.148:3000/", // fog server -> weight 2
-  "http://54.78.193.27:3000/", // cloud server -> weight 3
+  `${edge_server}:8001/`,
+  `${fog_server}:3000/`,
+  `${cloud_server}:3000/`,
 ];
 
 let current = 0,

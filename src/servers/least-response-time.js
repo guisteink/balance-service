@@ -1,10 +1,14 @@
 const leastResponseTime = require('../algorithms/least-response-time');
 const express = require('express');
 const axios = require('axios');
+require('dotenv').config();
 
 const port = 6000;
 const app = express();
 const DEFAULT_RESPONSE_TIME = 0;
+const cloud_server = process.env.CLOUD;
+const fog_server = process.env.FOG;
+const edge_server = process.env.EDGE;
 
 // const servers = [
 //   "http://localhost:8001/",
@@ -13,13 +17,12 @@ const DEFAULT_RESPONSE_TIME = 0;
 // ];
 
 const servers = [
-  "http://localhost:8001/", // edge server -> weight 1
-  "http://15.229.85.148:3000/", // fog server -> weight 2
-  "http://54.78.193.27:3000/", // cloud server -> weight 3
+  `${edge_server}:8001/`,
+  `${fog_server}:3000/`,
+  `${cloud_server}:3000/`,
 ];
 
-
-let server,
+let server, current, COUNT = 0,
   fibonacciKey = [];
 
 const lrt = leastResponseTime.New(servers);
@@ -37,7 +40,20 @@ const handler = async (req, res) => {
   if(fibonacci) fibonacciKey.push(`fibonacci=${fibonacci}`);
   else fibonacciKey.push(`fibonacci=0`);
 
-  server = lrt.next();
+  // just to establish connection
+  if(COUNT >= 0 && COUNT <= 20) {
+    server = fog_server; COUNT++;
+  }
+
+  if(COUNT >= 21 && COUNT <= 40) {
+    server = cloud_server; COUNT++;
+  }
+
+  if(COUNT >= 41 && COUNT <= 60) {
+    server = edge_server; COUNT++;
+  }
+
+  if (COUNT > 61) server = lrt.next();
 
   try {
     const response = await axios(server, { method: 'GET', params: { fibonacci } });

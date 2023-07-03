@@ -16,8 +16,8 @@ const servers = new WRR();
 //     });
 // }
 servers.add({ uri: `http://localhost:8001/`, weight: 1 }); // edge server -> weight 1
-servers.add({ uri: `http://15.229.85.148:3000/`, weight: 2 }); // fog server -> weight 2
-servers.add({ uri: `http://54.78.193.27:3000/`, weight: 3 }); // cloud server -> weight 3
+servers.add({ uri: `http://18.228.19.9:3000/`, weight: 2 }); // fog server -> weight 2
+servers.add({ uri: `http://3.252.123.45:3000/`, weight: 3 }); // cloud server -> weight 3
 
 let server,
   redisClient,

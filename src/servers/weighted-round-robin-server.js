@@ -1,22 +1,19 @@
 const express = require('express');
 const axios = require('axios');
 const WRR = require('../algorithms/weighted-round-robin');
+require('dotenv').config();
+
+const cloud_server = process.env.CLOUD;
+const fog_server = process.env.FOG;
+const edge_server = process.env.EDGE;
 
 const port = 9000;
 const app = express();
 const servers = new WRR();
 
-//todo: env
-// for(let i = 0; i <= 2; i++) {
-//     servers.add({
-//         uri: `http://localhost:800${i+1}/`,
-//         weight: i+1
-//     });
-// }
-
-servers.add({ uri: `http://localhost:8001/`, weight: 1 }); // edge server -> weight 1
-servers.add({ uri: `http://15.229.85.148:3000/`, weight: 2 }); // fog server -> weight 2
-servers.add({ uri: `http://54.78.193.27:3000/`, weight: 3 }); // cloud server -> weight 3
+servers.add({ uri: edge_server, weight: 1 }); // edge server -> weight 1
+servers.add({ uri: fog_server, weight: 2 }); // fog server -> weight 2
+servers.add({ uri: cloud_server, weight: 3 }); // cloud server -> weight 3
 
 let server;
 
