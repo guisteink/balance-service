@@ -8,16 +8,15 @@ const port = 9000;
 const app = express();
 const servers = new WRR();
 
-//todo: env
-// for(let i = 0; i <= 2; i++) {
-//     servers.add({
-//         uri: `http://localhost:800${i+1}/`,
-//         weight: i+1
-//     });
-// }
-servers.add({ uri: `http://localhost:8001/`, weight: 1 }); // edge server -> weight 1
-servers.add({ uri: `http://18.228.19.9:3000/`, weight: 2 }); // fog server -> weight 2
-servers.add({ uri: `http://3.252.123.45:3000/`, weight: 3 }); // cloud server -> weight 3
+require('dotenv').config();
+
+const cloud_server = process.env.CLOUD;
+const fog_server = process.env.FOG;
+const edge_server = process.env.EDGE;
+
+servers.add({ uri: `${edge_server}:8001/`, weight: 1 }); // edge server -> weight 1
+servers.add({ uri: `${fog_server}:3000/`, weight: 2 }); // fog server -> weight 2
+servers.add({ uri: `${cloud_server}:3000/`, weight: 3 }); // cloud server -> weight 3
 
 let server,
   redisClient,

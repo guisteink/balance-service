@@ -3,12 +3,13 @@ const express = require('express');
 const axios = require('axios');
 require('dotenv').config();
 
-const port = 6000;
 const app = express();
 const DEFAULT_RESPONSE_TIME = 0;
-const cloud_server = process.env.CLOUD;
-const fog_server = process.env.FOG;
-const edge_server = process.env.EDGE;
+
+const port = 6000;
+const cloud_server = `${process.env.CLOUD}:3000`;
+const fog_server = `${process.env.FOG}:3000/`;
+const edge_server = `${process.env.EDGE}:8001/`;
 
 // const servers = [
 //   "http://localhost:8001/",
@@ -17,12 +18,12 @@ const edge_server = process.env.EDGE;
 // ];
 
 const servers = [
-  `${edge_server}:8001/`,
-  `${fog_server}:3000/`,
-  `${cloud_server}:3000/`,
+  edge_server,
+  fog_server,
+  cloud_server,
 ];
 
-let server, current, COUNT = 0,
+let server, COUNT = 0,
   fibonacciKey = [];
 
 const lrt = leastResponseTime.New(servers);

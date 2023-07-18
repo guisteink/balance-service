@@ -11,9 +11,9 @@ const port = 9000;
 const app = express();
 const servers = new WRR();
 
-servers.add({ uri: edge_server, weight: 1 }); // edge server -> weight 1
-servers.add({ uri: fog_server, weight: 2 }); // fog server -> weight 2
-servers.add({ uri: cloud_server, weight: 3 }); // cloud server -> weight 3
+servers.add({ uri: `${edge_server}:8001/`, weight: 1 }); // edge server -> weight 1
+servers.add({ uri: `${fog_server}:3000/`, weight: 2 }); // fog server -> weight 2
+servers.add({ uri: `${cloud_server}:3000/`, weight: 3 }); // cloud server -> weight 3
 
 let server;
 
